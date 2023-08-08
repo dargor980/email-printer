@@ -2,23 +2,15 @@ import email
 import imaplib
 import os
 import subprocess
-from dotenv import load_dotenv
+from config import ConfigEmail
 
-load_dotenv()
-
-
-email_user = os.getenv('EMAIL_USER')
-email_pass = os.getenv('EMAIL_PASSWORD')
-imap_server = os.getenv('IMAP_SERVER')
-
-mail = imaplib.IMAP4_SSL(imap_server)
-mail.login(email_user, email_pass)
+mail = imaplib.IMAP4_SSL(ConfigEmail.imap_server)
+mail.login(ConfigEmail.email_user, ConfigEmail.email_pass)
 
 mail.select("inbox")
 
 result, data = mail.uid("search", None, '(UNSEEN)')
 email_ids = data[0].split()
-
 
 for num in email_ids:
     result, data = mail.uid("fetch", num, "(BODY.PEEK[])")
